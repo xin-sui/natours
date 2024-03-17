@@ -71,7 +71,15 @@ const tourSchema = new mongoose.Schema({
     select: false //不会查询出来
   },
   startDates: [Date]
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
+// chema 可以定義虛擬屬性（virtuals），這些虛擬屬性不會被實際保存到 MongoDB 數據庫中，但它們可以在查詢文檔時被當作文檔的屬性來使用。
+tourSchema.virtual('durationWeeks').get(function () {
+  // 计算tour的持续时间，以周为单位
+  return (this.duration / 7).toFixed(2)
+})
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
