@@ -137,24 +137,25 @@ exports.getDistances = catchAsync(async (req, res, next) => {
     next(new AppError('请提供正确的经纬度', 400));
   }
 
-  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001; //如果是英里，则乘数为0.000621371，如果是公里，则乘数为0.001
 
   const distances = await Tour.aggregate([
     {
+      //  $geoNear 阶段用于计算两个地理空间对象之间的距离。
       $geoNear: {
         near: {
-          type: 'Point',
-          coordinates: [lng * 1, lat * 1]
+          type: 'Point', // 指定要查找的地理空间类型为点
+          coordinates: [lng * 1, lat * 1] // 指定点的坐标
         },
-        distanceField: 'distance',
-        distanceMultiplier: multiplier
+        distanceField: 'distance', // 距离字段
+        distanceMultiplier: multiplier // 距离乘数
       }
     },
     {
       // 投影操作符，用于选择要返回的字段
       $project: {
         distance: 1, //距离
-        name: 1
+        name: 1 //旅游名称
       }
     }
   ]);

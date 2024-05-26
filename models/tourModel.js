@@ -203,13 +203,13 @@ tourSchema.pre('/^find/', function(docs, next) {
   next();
 });
 // 聚合中间件，在执行聚合查询之前添加 $match 阶段
-// tourSchema.pre('aggregate', function(next) {
-//   // 将 $match 阶段添加到聚合管道的开头，排除 secreTour 为 true 的文档
-//   this.pipeline().unshift({
-//     $match: { secretTour: { $ne: true } }
-//   });
-//   next();
-// });
+tourSchema.pre('aggregate', function(next) {
+  // 将 $match 阶段添加到聚合管道的开头，排除 secreTour 为 true 的文档
+  this.pipeline().unshift({
+    $match: { secretTour: { $ne: true } }
+  });
+  next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
